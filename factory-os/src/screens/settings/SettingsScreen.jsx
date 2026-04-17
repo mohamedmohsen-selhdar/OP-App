@@ -111,7 +111,7 @@ function InviteUserModal({ roles, onClose, onDone }) {
       <FormField label="كلمة المرور المؤقتة" required>
         <input type="password" style={inputStyle} value={form.password} onChange={e => set('password', e.target.value)} placeholder="8 أحرف على الأقل" />
       </FormField>
-      {error && <div style={{ padding: '10px 14px', borderRadius: 10, background: 'var(--danger)18', color: 'var(--danger)', fontSize: '0.82rem', marginBottom: 14 }}>⚠️ {error}</div>}
+      {error && <div style={{ padding: '10px 14px', borderRadius: 10, background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', fontSize: '0.82rem', marginBottom: 14 }}>⚠️ {error}</div>}
       <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
         <button onClick={onClose} style={{ padding: '10px 20px', borderRadius: 10, border: '1px solid var(--bg-border)', background: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>إلغاء</button>
         <button onClick={handleSubmit} disabled={saving} style={{ padding: '10px 20px', borderRadius: 10, border: 'none', background: 'var(--accent)', color: '#fff', cursor: saving ? 'not-allowed' : 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 7, opacity: saving ? .7 : 1 }}>
@@ -201,12 +201,12 @@ function UsersTab({ roles }) {
             const roleColor = roleColors[u.role?.code] || 'var(--text-muted)';
             return (
               <div key={u.id} style={{ background: 'var(--bg-card)', border: `1px solid ${isMe ? 'var(--accent)44' : 'var(--bg-border)'}`, borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14 }}>
-                <div style={{ width: 40, height: 40, borderRadius: '50%', background: `linear-gradient(135deg, ${roleColor}, ${roleColor}88)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#fff', fontSize: '1rem', flexShrink: 0 }}>
+                <div style={{ width: 40, height: 40, borderRadius: '50%', background: roleColor, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#fff', fontSize: '1rem', flexShrink: 0 }}>
                   {(u.name_ar || u.name_en || 'U')[0]}
                 </div>
                 <div style={{ flex: 1 }}>
                   <p style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.9rem' }}>
-                    {u.name_ar || u.name_en} {isMe && <span style={{ fontSize: '0.68rem', color: 'var(--accent)', background: 'var(--accent)18', padding: '1px 7px', borderRadius: 99 }}>أنت</span>}
+                    {u.name_ar || u.name_en} {isMe && <span style={{ fontSize: '0.68rem', color: 'var(--accent)', background: 'rgba(var(--accent-rgb, 59, 130, 246), 0.1)', padding: '1px 7px', borderRadius: 99 }}>أنت</span>}
                   </p>
                   <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 2 }}>
                     {u.name_en}
@@ -214,11 +214,11 @@ function UsersTab({ roles }) {
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   {u.role ? (
-                    <span style={{ fontSize: '0.72rem', fontWeight: 600, padding: '3px 10px', borderRadius: 99, color: roleColor, background: `${roleColor}18` }}>
+                    <span style={{ fontSize: '0.72rem', fontWeight: 600, padding: '3px 10px', borderRadius: 99, color: roleColor, background: 'rgba(128, 128, 128, 0.1)' }}>
                       {u.role.name_ar}
                     </span>
                   ) : (
-                    <span style={{ fontSize: '0.72rem', color: 'var(--danger)', background: 'var(--danger)18', padding: '3px 10px', borderRadius: 99, display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--danger)', background: 'rgba(239, 68, 68, 0.1)', padding: '3px 10px', borderRadius: 99, display: 'flex', alignItems: 'center', gap: 4 }}>
                       <AlertTriangle size={10} /> بدون دور
                     </span>
                   )}
@@ -259,7 +259,7 @@ function RolesTab() {
 
   return (
     <div>
-      <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: 16, padding: '10px 14px', background: 'var(--info)11', borderRadius: 10, border: '1px solid var(--info)33' }}>
+      <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: 16, padding: '10px 14px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: 10, border: '1px solid rgba(59, 130, 246, 0.2)' }}>
         ℹ️ هذه الأدوار معرّفة مسبقاً. كل دور يتحكم في الوصول لكل وحدة في النظام.
       </p>
       {loading ? <div style={{ height: 200, borderRadius: 14, background: 'var(--bg-border)', animation: 'pulse 1.5s infinite' }} /> :
@@ -274,14 +274,13 @@ function RolesTab() {
               <div key={role.id} style={{ background: 'var(--bg-card)', border: `1px solid ${isOwner ? 'var(--warning)44' : 'var(--bg-border)'}`, borderRadius: 14, overflow: 'hidden' }}>
                 <button onClick={() => setExpand(isOpen ? null : role.id)}
                   style={{ width: '100%', padding: '16px 18px', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14, textAlign: 'start' }}>
-                  <div style={{ width: 36, height: 36, borderRadius: 10, background: `${roleColor}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <Shield size={16} color={roleColor} />
                   </div>
                   <div style={{ flex: 1 }}>
                     <p style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.9rem' }}>{role.name_ar}</p>
                     <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2 }}>{role.code}</p>
                   </div>
-                  {isOwner && <span style={{ fontSize: '0.7rem', color: 'var(--warning)', background: 'var(--warning)18', padding: '2px 9px', borderRadius: 99, fontWeight: 700 }}>صلاحيات كاملة</span>}
+                  {isOwner && <span style={{ fontSize: '0.7rem', color: 'var(--warning)', background: 'rgba(245, 158, 11, 0.1)', padding: '2px 9px', borderRadius: 99, fontWeight: 700 }}>صلاحيات كاملة</span>}
                   <ChevronDown size={16} color="var(--text-muted)" style={{ transform: isOpen ? 'rotate(180deg)' : '', transition: 'transform .2s', flexShrink: 0 }} />
                 </button>
 
@@ -369,7 +368,7 @@ function AddLineModal({ onClose, onDone }) {
       <FormField label="الاسم بالإنجليزية">
         <input type="text" style={inputStyle} value={form.name_en} onChange={e => set('name_en', e.target.value)} placeholder="Production Line 4" />
       </FormField>
-      {error && <div style={{ padding: '10px 14px', borderRadius: 10, background: 'var(--danger)18', color: 'var(--danger)', fontSize: '0.82rem', marginBottom: 14 }}>⚠️ {error}</div>}
+      {error && <div style={{ padding: '10px 14px', borderRadius: 10, background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', fontSize: '0.82rem', marginBottom: 14 }}>⚠️ {error}</div>}
       <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
         <button onClick={onClose} style={{ padding: '10px 20px', borderRadius: 10, border: '1px solid var(--bg-border)', background: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>إلغاء</button>
         <button onClick={handleSubmit} disabled={saving} style={{ padding: '10px 20px', borderRadius: 10, border: 'none', background: 'var(--accent)', color: '#fff', cursor: saving ? 'not-allowed' : 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 7 }}>
@@ -410,7 +409,6 @@ function LinesTab() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {lines.map(line => (
             <div key={line.id} style={{ background: 'var(--bg-card)', border: '1px solid var(--bg-border)', borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: line.is_active ? 'var(--success)18' : 'var(--bg-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <Factory size={16} color={line.is_active ? 'var(--success)' : 'var(--text-muted)'} />
               </div>
               <div style={{ flex: 1 }}>
@@ -418,7 +416,7 @@ function LinesTab() {
                 <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 2 }}>{line.code} {line.capacity_per_hour ? `· طاقة: ${line.capacity_per_hour}/ساعة` : ''}</p>
               </div>
               <button onClick={() => toggle(line.id, line.is_active)}
-                style={{ padding: '7px 14px', borderRadius: 9, border: `1px solid ${line.is_active ? 'var(--success)' : 'var(--bg-border)'}`, background: line.is_active ? 'var(--success)18' : 'none', color: line.is_active ? 'var(--success)' : 'var(--text-muted)', cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600 }}>
+                style={{ padding: '7px 14px', borderRadius: 9, border: `1px solid ${line.is_active ? 'var(--success)' : 'var(--bg-border)'}`, background: line.is_active ? 'rgba(34, 197, 94, 0.1)' : 'none', color: line.is_active ? 'var(--success)' : 'var(--text-muted)', cursor: 'pointer', fontSize: '0.78rem', fontWeight: 600 }}>
                 {line.is_active ? 'نشط' : 'معطّل'}
               </button>
             </div>
@@ -473,7 +471,7 @@ function AddWarehouseModal({ onClose, onDone }) {
       <FormField label="الموقع">
         <input type="text" style={inputStyle} value={form.location} onChange={e => set('location', e.target.value)} placeholder="المبنى A - الطابق الأرضي" />
       </FormField>
-      {error && <div style={{ padding: '10px 14px', borderRadius: 10, background: 'var(--danger)18', color: 'var(--danger)', fontSize: '0.82rem', marginBottom: 14 }}>⚠️ {error}</div>}
+      {error && <div style={{ padding: '10px 14px', borderRadius: 10, background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', fontSize: '0.82rem', marginBottom: 14 }}>⚠️ {error}</div>}
       <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
         <button onClick={onClose} style={{ padding: '10px 20px', borderRadius: 10, border: '1px solid var(--bg-border)', background: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>إلغاء</button>
         <button onClick={handleSubmit} disabled={saving} style={{ padding: '10px 20px', borderRadius: 10, border: 'none', background: 'var(--accent)', color: '#fff', cursor: saving ? 'not-allowed' : 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 7 }}>
@@ -516,7 +514,7 @@ function WarehousesTab() {
                 <div style={{ width: 36, height: 36, borderRadius: 10, background: `${typeColor[wh.type] || 'var(--accent)'}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Warehouse size={16} color={typeColor[wh.type] || 'var(--accent)'} />
                 </div>
-                <span style={{ fontSize: '0.68rem', fontWeight: 600, padding: '2px 8px', borderRadius: 99, color: typeColor[wh.type], background: `${typeColor[wh.type]}18` }}>
+                <span style={{ fontSize: '0.68rem', fontWeight: 600, padding: '2px 8px', borderRadius: 99, color: typeColor[wh.type], background: 'rgba(128, 128, 128, 0.1)' }}>
                   {typeLabel[wh.type] || wh.type}
                 </span>
               </div>
