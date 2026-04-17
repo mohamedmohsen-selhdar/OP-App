@@ -20,7 +20,7 @@ export async function sendEmail({ to, subject_ar, subject_en, body_ar, body_en, 
         'Authorization': `Bearer ${session.access_token}`,
       },
       body: JSON.stringify({
-        from: 'FactoryOS <noreply@factoryos.app>',
+        from: 'FLAPP <noreply@factoryos.app>',
         to,
         subject,
         html,
@@ -55,12 +55,12 @@ function buildEmailTemplate({ body_ar, body_en, lang }) {
 </head>
 <body>
   <div class="wrapper">
-    <div class="header"><h1>🏭 FactoryOS</h1></div>
+    <div class="header"><h1 style="font-family: 'Outfit', sans-serif; font-weight: 900; letter-spacing: -1px; margin:0;"><span style="color: #ffffff;">FL</span><span style="color: #b91c1c;">APP</span></h1></div>
     <div class="body">
       <div class="ar-block">${body_ar}</div>
       <div class="en-block">${body_en}</div>
     </div>
-    <div class="footer">FactoryOS — Manufacturing ERP</div>
+    <div class="footer">FLAPP — Manufacturing ERP</div>
   </div>
 </body>
 </html>`;

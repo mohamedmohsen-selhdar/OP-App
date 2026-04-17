@@ -82,17 +82,18 @@ export default function LoginScreen() {
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '36px' }}>
           <div style={{
-            width: '72px', height: '72px', borderRadius: '20px',
-            background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 16px',
-            boxShadow: '0 8px 32px rgba(245,158,11,0.3)',
+            fontFamily: "'Outfit', sans-serif",
+            fontSize: '3.5rem',
+            fontWeight: 900,
+            letterSpacing: '-2px',
+            marginBottom: '8px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            lineHeight: 1
           }}>
-            <Factory size={36} color="#1c1917" />
+            <span style={{ color: 'var(--text-primary)' }}>FL</span><span style={{ color: '#b91c1c' }}>APP</span>
           </div>
-          <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--accent)', marginBottom: '4px' }}>
-            FactoryOS
-          </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
             {lang === 'ar' ? 'نظام إدارة التصنيع' : 'Manufacturing ERP'}
           </p>

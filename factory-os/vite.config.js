@@ -11,8 +11,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons.svg'],
       manifest: {
-        name: 'FactoryOS ERP',
-        short_name: 'FactoryOS',
+        name: 'FLAPP',
+        short_name: 'FLAPP',
         description: 'Advanced Factory Management System',
         theme_color: '#0f172a', /* matches dark bg-primary */
         background_color: '#0f172a',

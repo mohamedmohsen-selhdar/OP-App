@@ -89,7 +89,7 @@ const ar = {
   welcome_back: 'أهلاً بعودتك',
 
   // App
-  app_name: 'FactoryOS',
+  app_name: 'FLAPP',
   app_subtitle: 'نظام إدارة التصنيع',
 };
 
@@ -181,7 +181,7 @@ const en = {
   welcome_back: 'Welcome back',
 
   // App
-  app_name: 'FactoryOS',
+  app_name: 'FLAPP',
   app_subtitle: 'Manufacturing ERP',
 };
 

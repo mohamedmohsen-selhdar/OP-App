@@ -32,16 +32,15 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       {/* Logo */}
-      <div className="sidebar-logo">
+      <div className="sidebar-logo" style={{ gap: 0, paddingBlock: '12px' }}>
         <div style={{
-          width: 36, height: 36, borderRadius: 10,
-          background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '1.2rem', flexShrink: 0,
+          fontFamily: "'Outfit', sans-serif",
+          fontSize: '1.8rem',
+          fontWeight: 900,
+          letterSpacing: '-1px',
         }}>
-          🏭
+          <span style={{ color: 'var(--text-primary)' }}>FL</span><span style={{ color: '#b91c1c' }}>APP</span>
         </div>
-        <span className="logo-text">FactoryOS</span>
       </div>
 
       {/* Nav items */}
