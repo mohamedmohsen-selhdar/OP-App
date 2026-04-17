@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
+import { sendEmail } from '../../lib/emailNotifications';
 import {
   Settings, Users, Shield, Factory, Warehouse,
   Plus, Search, X, Check, Loader2, RefreshCw,
@@ -20,6 +21,7 @@ const TABS = [
   { key: 'roles',       icon: Shield,    label: 'الأدوار' },
   { key: 'lines',       icon: Factory,   label: 'خطوط الإنتاج' },
   { key: 'warehouses',  icon: Warehouse, label: 'المستودعات' },
+  { key: 'branding',    icon: Shield,    label: 'الهوية البصرية' },
 ];
 function Spinner() { return <Loader2 size={16} style={{ animation: 'spin 1s linear infinite', color: 'var(--accent)' }} />; }
 
@@ -530,6 +532,86 @@ function WarehousesTab() {
   );
 }
 
+function BrandingTab() {
+  const { profile } = useAuth();
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSendTest = async () => {
+    if (!profile?.email) return;
+    setSending(true);
+    setSent(false);
+    setError('');
+    try {
+      await sendEmail({
+        to: profile.email,
+        subject_ar: 'اختبار الهوية الجديدة — FLAPP',
+        subject_en: 'Branding Test — FLAPP',
+        body_ar: 'هذا بريد إلكتروني تجريبي لاستعراض الهوية البصرية الجديدة لنظام FLAPP. تم تحديث الشعار والألوان بنجاح.',
+        body_en: 'This is a test email to preview the new visual identity for FLAPP. The logo and colors have been successfully updated.',
+        lang: 'ar'
+      });
+      setSent(true);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+      <div style={{ 
+        fontFamily: "'Outfit', sans-serif", 
+        fontSize: '3rem', 
+        fontWeight: 900, 
+        letterSpacing: '-2px',
+        marginBottom: 20
+      }}>
+        <span style={{ color: 'var(--text-primary)' }}>FL</span><span style={{ color: '#b91c1c' }}>APP</span>
+      </div>
+      <h3 style={{ color: 'var(--text-primary)', marginBottom: 12 }}>اختبار التنبيهات</h3>
+      <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: 400, margin: '0 auto 24px' }}>
+        اضغط على الزر أدناه لإرسال بريد إلكتروني تجريبي إلى بريدك المسجل ليتم استعراض الشعار الجديد والألوان على هاتفك.
+      </p>
+      
+      <button 
+        onClick={handleSendTest} 
+        disabled={sending}
+        style={{ 
+          padding: '12px 24px', 
+          borderRadius: 12, 
+          border: 'none', 
+          background: sent ? 'var(--success)' : 'var(--accent)', 
+          color: '#fff', 
+          fontWeight: 700, 
+          cursor: sending ? 'wait' : 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          margin: '0 auto'
+        }}
+      >
+        {sending ? <Spinner /> : sent ? <Check size={18} /> : <RefreshCw size={18} />}
+        {sending ? 'جارٍ الإرسال...' : sent ? 'تم الإرسال بنجاح!' : 'إرسال بريد تجريبي'}
+      </button>
+
+      {error && (
+        <p style={{ color: 'var(--danger)', fontSize: '0.85rem', marginTop: 16 }}>
+          ⚠️ فشل الإرسال: {error}
+        </p>
+      )}
+
+      {sent && (
+        <p style={{ color: 'var(--success)', fontSize: '0.85rem', marginTop: 16 }}>
+          تحقق من بريدك الإلكتروني الآن (أو مجلد Junk/Spam)
+        </p>
+      )}
+    </div>
+  );
+}
+
 /* ═══════════════════════════════════════════════
    MAIN SCREEN
 ═══════════════════════════════════════════════ */
@@ -569,6 +651,7 @@ export default function SettingsScreen() {
         {activeTab === 'roles'      && <RolesTab />}
         {activeTab === 'lines'      && <LinesTab />}
         {activeTab === 'warehouses' && <WarehousesTab />}
+        {activeTab === 'branding'   && <BrandingTab />}
       </div>
 
       <style>{`
