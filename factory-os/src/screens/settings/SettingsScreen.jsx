@@ -3,7 +3,6 @@ import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 import { sendEmail } from '../../lib/emailNotifications';
 import { subscribeUserToPush, checkPushSubscription } from '../../lib/pushNotifications';
-import { Bell, Smartphone, Mail } from 'lucide-react';
 import {
   Settings, Users, Shield, Factory, Warehouse,
   Plus, Search, X, Check, Loader2, RefreshCw,
@@ -277,7 +276,6 @@ function RolesTab() {
                 <button onClick={() => setExpand(isOpen ? null : role.id)}
                   style={{ width: '100%', padding: '16px 18px', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14, textAlign: 'start' }}>
                     <Shield size={16} color={roleColor} />
-                  </div>
                   <div style={{ flex: 1 }}>
                     <p style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.9rem' }}>{role.name_ar}</p>
                     <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2 }}>{role.code}</p>
@@ -412,7 +410,6 @@ function LinesTab() {
           {lines.map(line => (
             <div key={line.id} style={{ background: 'var(--bg-card)', border: '1px solid var(--bg-border)', borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14 }}>
                 <Factory size={16} color={line.is_active ? 'var(--success)' : 'var(--text-muted)'} />
-              </div>
               <div style={{ flex: 1 }}>
                 <p style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.9rem' }}>{line.name_ar}</p>
                 <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 2 }}>{line.code} {line.capacity_per_hour ? `· طاقة: ${line.capacity_per_hour}/ساعة` : ''}</p>
