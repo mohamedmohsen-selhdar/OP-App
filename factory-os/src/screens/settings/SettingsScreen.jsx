@@ -555,21 +555,29 @@ function BrandingTab() {
   };
 
   const handleSendTest = async () => {
-    if (!profile?.email) return;
+    if (!profile?.email || !profile?.id) return;
     setSending(true);
     setSent(false);
     setError('');
     try {
-      // In a real implementation, this would call a single "pulse" edge function
-      // for now we call sendEmail + push if possible
-      await sendEmail({
-        to: profile.email,
-        subject_ar: 'تنبيه FLAPP — اختبار شامل',
-        subject_en: 'FLAPP Alert — Full Test',
-        body_ar: 'هذا تنبيه تجريبي لنظام FLAPP. تم استلام التنبيه بنجاح على البريد الإلكتروني.',
-        body_en: 'This is a test alert from FLAPP. The notification was successfully received via email.',
-        lang: 'ar'
+      const response = await fetch('https://qmhgckkqksnxwmxqllkp.supabase.co/functions/v1/pulse-proxy', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabase.auth.getSession()?.access_token || ''}`
+        },
+        body: JSON.stringify({
+          to: profile.email,
+          userId: profile.id,
+          subject: 'تنبيه FLAPP — اختبار شامل',
+          body: 'هذا تنبيه تجريبي لنظام FLAPP. تم استلام التنبيه بنجاح على الهاتف والبريد الإلكتروني.'
+        })
       });
+
+      if (!response.ok) throw new Error('Failed to trigger Pulse');
+      
+      const result = await response.json();
+      console.log('Pulse Result:', result);
       setSent(true);
     } catch (e) {
       setError(e.message);
