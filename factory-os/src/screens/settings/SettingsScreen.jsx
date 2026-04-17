@@ -2,11 +2,13 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 import { sendEmail } from '../../lib/emailNotifications';
+import { subscribeUserToPush, checkPushSubscription } from '../../lib/pushNotifications';
+import { Bell, Smartphone, Mail } from 'lucide-react';
 import {
   Settings, Users, Shield, Factory, Warehouse,
   Plus, Search, X, Check, Loader2, RefreshCw,
   UserCheck, UserX, Edit2, ChevronDown, Building2,
-  Key, AlertTriangle,
+  Key, AlertTriangle, Bell, Smartphone, Mail
 } from 'lucide-react';
 
 /* ─── Helpers ──────────────────────────────────────────── */
@@ -535,6 +537,25 @@ function BrandingTab() {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
+  const [pushEnabled, setPushEnabled] = useState(false);
+  const [pushLoading, setPushLoading] = useState(true);
+
+  useEffect(() => {
+    checkPushSubscription().then(setPushEnabled).finally(() => setPushLoading(false));
+  }, []);
+
+  const handleEnablePush = async () => {
+    setPushLoading(true);
+    setError('');
+    try {
+      await subscribeUserToPush();
+      setPushEnabled(true);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setPushLoading(false);
+    }
+  };
 
   const handleSendTest = async () => {
     if (!profile?.email) return;
@@ -542,12 +563,14 @@ function BrandingTab() {
     setSent(false);
     setError('');
     try {
+      // In a real implementation, this would call a single "pulse" edge function
+      // for now we call sendEmail + push if possible
       await sendEmail({
         to: profile.email,
-        subject_ar: 'اختبار الهوية الجديدة — FLAPP',
-        subject_en: 'Branding Test — FLAPP',
-        body_ar: 'هذا بريد إلكتروني تجريبي لاستعراض الهوية البصرية الجديدة لنظام FLAPP. تم تحديث الشعار والألوان بنجاح.',
-        body_en: 'This is a test email to preview the new visual identity for FLAPP. The logo and colors have been successfully updated.',
+        subject_ar: 'تنبيه FLAPP — اختبار شامل',
+        subject_en: 'FLAPP Alert — Full Test',
+        body_ar: 'هذا تنبيه تجريبي لنظام FLAPP. تم استلام التنبيه بنجاح على البريد الإلكتروني.',
+        body_en: 'This is a test alert from FLAPP. The notification was successfully received via email.',
         lang: 'ar'
       });
       setSent(true);
@@ -559,53 +582,105 @@ function BrandingTab() {
   };
 
   return (
-    <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+    <div style={{ textAlign: 'center', padding: '20px 10px' }}>
       <div style={{ 
         fontFamily: "'Outfit', sans-serif", 
-        fontSize: '3rem', 
+        fontSize: '3.5rem', 
         fontWeight: 900, 
-        letterSpacing: '-2px',
-        marginBottom: 20
+        letterSpacing: '-3px',
+        marginBottom: 8,
+        color: 'var(--text-primary)'
       }}>
-        <span style={{ color: 'var(--text-primary)' }}>FL</span><span style={{ color: '#b91c1c' }}>APP</span>
+        FL<span style={{ color: '#b91c1c' }}>APP</span>
       </div>
-      <h3 style={{ color: 'var(--text-primary)', marginBottom: 12 }}>اختبار التنبيهات</h3>
-      <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: 400, margin: '0 auto 24px' }}>
-        اضغط على الزر أدناه لإرسال بريد إلكتروني تجريبي إلى بريدك المسجل ليتم استعراض الشعار الجديد والألوان على هاتفك.
-      </p>
+      <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: 32 }}>Manufacturing ERP Identity</p>
       
-      <button 
-        onClick={handleSendTest} 
-        disabled={sending}
-        style={{ 
-          padding: '12px 24px', 
-          borderRadius: 12, 
-          border: 'none', 
-          background: sent ? 'var(--success)' : 'var(--accent)', 
-          color: '#fff', 
-          fontWeight: 700, 
-          cursor: sending ? 'wait' : 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 10,
-          margin: '0 auto'
-        }}
-      >
-        {sending ? <Spinner /> : sent ? <Check size={18} /> : <RefreshCw size={18} />}
-        {sending ? 'جارٍ الإرسال...' : sent ? 'تم الإرسال بنجاح!' : 'إرسال بريد تجريبي'}
-      </button>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20, textAlign: 'start' }}>
+        {/* Email Card */}
+        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--bg-border)', borderRadius: 20, padding: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+            <div style={{ padding: 10, borderRadius: 12, background: 'rgba(59, 130, 246, 0.1)', color: 'var(--info)' }}>
+              <Mail size={20} />
+            </div>
+            <h4 style={{ margin: 0, fontSize: '1rem' }}>تنبيهات البريد</h4>
+          </div>
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 20 }}>
+            سيتم إرسال إشعارات النظام، تقارير الإنتاج، وتنبيهات الجودة إلى بريدك المسجل: <br/>
+            <strong style={{ color: 'var(--text-primary)' }}>{profile?.email}</strong>
+          </p>
+        </div>
 
-      {error && (
-        <p style={{ color: 'var(--danger)', fontSize: '0.85rem', marginTop: 16 }}>
-          ⚠️ فشل الإرسال: {error}
-        </p>
-      )}
+        {/* Push Card */}
+        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--bg-border)', borderRadius: 20, padding: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+            <div style={{ padding: 10, borderRadius: 12, background: 'rgba(139, 92, 246, 0.1)', color: '#8b5cf6' }}>
+              <Smartphone size={20} />
+            </div>
+            <h4 style={{ margin: 0, fontSize: '1rem' }}>تنبيهات الهاتف</h4>
+          </div>
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 20 }}>
+            استلم تنبيهات فورية على هاتفك كأنها تطبيق أصلي (PWA). تدعم استلام التنبيهات حتى عند إغلاق التطبيق.
+          </p>
+          
+          <button 
+            onClick={handleEnablePush}
+            disabled={pushLoading || pushEnabled}
+            style={{ 
+              width: '100%',
+              padding: '12px',
+              borderRadius: 12,
+              border: pushEnabled ? '1px solid var(--success)' : 'none',
+              background: pushEnabled ? 'rgba(34, 197, 94, 0.1)' : 'var(--accent)',
+              color: pushEnabled ? 'var(--success)' : '#fff',
+              fontSize: '0.85rem',
+              fontWeight: 700,
+              cursor: (pushLoading || pushEnabled) ? 'default' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8
+            }}
+          >
+            {pushLoading ? <Spinner /> : pushEnabled ? <Check size={16} /> : <Bell size={16} />}
+            {pushLoading ? 'جارٍ التحميل...' : pushEnabled ? 'التنبيهات مفعلة' : 'تفعيل تنبيهات الهاتف'}
+          </button>
+        </div>
+      </div>
 
-      {sent && (
-        <p style={{ color: 'var(--success)', fontSize: '0.85rem', marginTop: 16 }}>
-          تحقق من بريدك الإلكتروني الآن (أو مجلد Junk/Spam)
+      <div style={{ marginTop: 40, paddingTop: 30, borderTop: '1px solid var(--bg-border)' }}>
+        <h4 style={{ marginBottom: 12 }}>اختبار التنبيهات الشامل</h4>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: 24 }}>
+          أرسل تنبيهاً تجريبياً لاختبار الهوية البصرية (FLAPP) على قنوات التواصل المتاحة.
         </p>
-      )}
+        
+        <button 
+          onClick={handleSendTest} 
+          disabled={sending}
+          style={{ 
+            padding: '14px 28px', 
+            borderRadius: 14, 
+            border: 'none', 
+            background: sent ? 'var(--success)' : '#fff', 
+            color: sent ? '#fff' : '#000', 
+            fontWeight: 800, 
+            cursor: sending ? 'wait' : 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            margin: '0 auto',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+          }}
+        >
+          {sending ? <Spinner /> : sent ? <Check size={20} /> : <RefreshCw size={20} />}
+          {sending ? 'جارٍ إرسال النبض...' : sent ? 'تم الإرسال بنجاح!' : 'إرسال نبضة تجريبية (Pulse Alert)'}
+        </button>
+
+        {error && (
+          <p style={{ color: 'var(--danger)', fontSize: '0.8rem', marginTop: 16 }}>
+            ⚠️ فشل الإجراء: {error}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

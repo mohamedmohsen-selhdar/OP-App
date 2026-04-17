@@ -8,13 +8,16 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.js',
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons.svg'],
       manifest: {
         name: 'FLAPP',
         short_name: 'FLAPP',
         description: 'Advanced Factory Management System',
-        theme_color: '#0f172a', /* matches dark bg-primary */
+        theme_color: '#0f172a',
         background_color: '#0f172a',
         display: 'standalone',
         orientation: 'portrait',
